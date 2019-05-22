@@ -11,12 +11,12 @@
     "url": "https://github.com/Raruto/leaflet-transparency.git"
   },
   "keywords": [
-    "leaflet"
-    "transparency"
-    "javascript"
-    "basemap"
-    "overlay"
-    "layer"
+    "leaflet",
+    "transparency",
+    "javascript",
+    "basemap",
+    "overlay",
+    "layer",
     "opacity-control"
   ],
   "author": "Raruto",
@@ -26,6 +26,6 @@
   },
   "homepage": "https://github.com/Raruto/leaflet-transparency#readme",
   "peerDependencies": {
-    "leaflet": "^1.3.2",
+    "leaflet": "^1.3.2"
   }
 }
