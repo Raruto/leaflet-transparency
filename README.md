@@ -5,7 +5,7 @@ _For a working example see [demo](https://raruto.github.io/examples/leaflet-tran
 
 ---
 
-> _Initally based on the [google-transparency](https://github.com/Raruto/google-transparency) plugin**_
+> _Initally based on the [google-transparency](https://github.com/Raruto/google-transparency) plugin_
 
 ---
 
