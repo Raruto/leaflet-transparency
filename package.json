@@ -1,0 +1,31 @@
+{
+  "name": "leaflet-transparency",
+  "version": "0.0.1",
+  "description": "A Leaflet plugin that allows to add an opacity control",
+  "main": "leaflet-transparency.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Raruto/leaflet-transparency.git"
+  },
+  "keywords": [
+    "leaflet",
+    "transparency",
+    "javascript",
+    "basemap",
+    "overlay",
+    "layer",
+    "opacity-control"
+  ],
+  "author": "Raruto",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Raruto/leaflet-transparency/issues"
+  },
+  "homepage": "https://github.com/Raruto/leaflet-transparency#readme",
+  "peerDependencies": {
+    "leaflet": "^1.3.2"
+  }
+}
