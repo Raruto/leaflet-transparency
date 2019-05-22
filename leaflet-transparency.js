@@ -6,7 +6,7 @@ L.Control.OpacitySlider = L.Control.extend({
     position: 'topright',
     opacity: 100,
     backgroundColor: 'transparent',
-    sliderImageUrl: 'images/opacity-slider3d14.png',
+    sliderImageUrl: 'opacity-slider3d14.png',
     margin: 5,
   },
 

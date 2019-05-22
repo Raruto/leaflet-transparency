@@ -55,7 +55,7 @@ _For a working example see [demo](https://raruto.github.io/examples/leaflet-tran
         },
         opacityControl: {
           options: {
-            sliderImageUrl: "https://raruto.github.io/cdn/leaflet-transparency/0.0.1/images/opacity-slider2.png",
+            sliderImageUrl: "https://raruto.github.io/cdn/leaflet-transparency/0.0.1/opacity-slider2.png",
             backgroundColor: "rgba(229, 227, 223, 0.9)",
             opacity: 0.75,
             position: 'topright',
