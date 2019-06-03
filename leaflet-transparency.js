@@ -42,11 +42,11 @@ L.Control.OpacitySlider = L.Control.extend({
     });
 
     L.DomEvent.on(container, 'click mousedown mousemove mouseup', function(e) {
-      if (e.type == 'mousedown') {
-        this._dragging = true;
-      } else if (e.type == 'mouseup') {
-        this._dragging = false;
-      } else if (e.type == 'mousemove' && this._dragging == true || e.type == 'click') {
+      L.DomUtil.disableTextSelection();
+      if (e.type == 'mousedown') this._dragging = true;
+      else if (e.type == 'mouseup' || e.type == 'click') this._dragging = false;
+
+      if (e.type == 'mousemove' && this._dragging == true || e.type == 'click') {
         var left = this.findPosLeft(this._container);
         var x = e.pageX - left - this.options.margin;
         this.knob.setValueX(x);
