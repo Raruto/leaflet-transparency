@@ -18,7 +18,7 @@ _For a working example see [demo](https://raruto.github.io/examples/leaflet-tran
     <style>html, body, #map { width: 100%; height: 100%; margin: 0; padding: 0; }</style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.2/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js"></script>
-    <script src="https://raruto.github.io/cdn/leaflet-transparency/0.0.1/leaflet-transparency.js"></script>
+    <script src="https://unpkg.com/leaflet-transparency@latest/leaflet-transparency.js"></script>
     ...
     </head>
     ```
@@ -53,9 +53,17 @@ _For a working example see [demo](https://raruto.github.io/examples/leaflet-tran
             maxZoom: 18,
           },
         },
-        opacityControl: {
+        opacityBaseControl: {
           options: {
-            sliderImageUrl: "https://raruto.github.io/cdn/leaflet-transparency/0.0.1/opacity-slider2.png",
+            sliderImageUrl: "images/opacity-slider2.png",
+            backgroundColor: "rgba(0, 0, 0, 0.9)",
+            opacity: 1,
+            position: 'topright',
+          }
+        },
+        opacityOverlayControl: {
+          options: {
+            sliderImageUrl: "images/opacity-slider2.png",
             backgroundColor: "rgba(229, 227, 223, 0.9)",
             opacity: 0.75,
             position: 'topright',
@@ -68,13 +76,13 @@ _For a working example see [demo](https://raruto.github.io/examples/leaflet-tran
       var layer = new L.TileLayer(opts.otmLayer.url, opts.otmLayer.options);
       var overlay = new L.TileLayer(opts.satelliteLayer.url, opts.satelliteLayer.options);
 
-      var controlOpacity = new L.Control.OpacitySlider(overlay, opts.opacityControl.options);
+      var controlBaseOpacity = new L.Control.OpacitySlider(null, opts.opacityBaseControl.options);
+      var controlOverlayOpacity = new L.Control.OpacitySlider(overlay, opts.opacityOverlayControl.options);      
 
-      controlOpacity.on('hidden', function(e) { overlay.remove(); });
-      controlOpacity.on('visible', function(e) { overlay.addTo(map); });
+      controlBaseOpacity.addTo(map);
+      controlOverlayOpacity.addTo(map);      
 
-      layer.addTo(map);
-      controlOpacity.addTo(map);
+      layer.addTo(map);      
 
     </script>
     ```

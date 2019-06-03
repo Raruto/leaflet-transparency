@@ -6,51 +6,79 @@ L.Control.OpacitySlider = L.Control.extend({
     position: 'topright',
     opacity: 100,
     backgroundColor: 'transparent',
-    sliderImageUrl: 'opacity-slider3d14.png',
+    sliderImageUrl: 'images/opacity-slider3d14.png',
     margin: 5,
   },
 
-  _OPACITY_MAX_PIXELS: 57,
+  _OPACITY_MAX_PIXELS: 69,
 
   initialize: function(layer, options) {
     L.Util.setOptions(this, options);
 
-    this.overlay = layer;
+    this.layer = layer;
+    this.layers = this.layer ? [this.layer] : [];
   },
 
   onAdd: function(map) {
 
-    var slider = L.DomUtil.create('DIV', 'opacity-slider');
-    slider.setAttribute("style", "margin:" + this.options.margin + "px;overflow-x:hidden;overflow-y:hidden;background:url(" + this.options.sliderImageUrl + ") no-repeat;width:71px;height:21px;cursor:pointer;");
+    var container = this._container = L.DomUtil.create('DIV', 'opacity-control');
+    var slider = this._slider = L.DomUtil.create('DIV', 'opacity-slider');
+    var knob = this._knob = L.DomUtil.create('DIV', 'opacity-knob');
 
-    var knob = L.DomUtil.create('DIV', 'knob');
+    container.setAttribute("style", "cursor:pointer;");
+    slider.setAttribute("style", "margin:" + this.options.margin + "px;overflow-x:hidden;overflow-y:hidden;background:url(" + this.options.sliderImageUrl + ") no-repeat;width:71px;height:21px;");
     knob.setAttribute("style", "padding:0;margin:0;overflow-x:hidden;overflow-y:hidden;background:url(" + this.options.sliderImageUrl + ") no-repeat -71px 0;width:14px;height:21px;");
+
     slider.appendChild(knob);
+    container.appendChild(slider);
 
     this.knob = new this.DraggableObject(knob, {
       restrictY: true,
-      container: slider,
+      container: container,
       onDragEnd: function(e) {
         var opacity = this.knob.getValueX();
         this.setOpacity(opacity);
       }.bind(this)
     });
 
-    L.DomEvent.on(slider, 'click', function(e) {
-      var left = this.findPosLeft(this._container);
-      var x = e.pageX - left - this.options.margin;
-      this.knob.setValueX(x);
-      this.setOpacity(x);
+    L.DomEvent.on(container, 'click mousedown mousemove mouseup', function(e) {
+      if (e.type == 'mousedown') {
+        this._dragging = true;
+      } else if (e.type == 'mouseup') {
+        this._dragging = false;
+      } else if (e.type == 'mousemove' && this._dragging == true || e.type == 'click') {
+        var left = this.findPosLeft(this._container);
+        var x = e.pageX - left - this.options.margin;
+        this.knob.setValueX(x);
+        this.setOpacity(x);
+      }
     }, this);
 
-    L.DomEvent.disableClickPropagation(slider);
+    L.DomEvent.disableClickPropagation(container);
 
-    // Set initial value
-    this._initialValue = this._OPACITY_MAX_PIXELS / (100 / this.options.opacity);
-    this.knob.setValueX(this._initialValue);
-    this.setOpacity(this._initialValue);
+    this._resetSlider();
 
-    return slider;
+    this.on('hidden', function(e) {
+      for (var i in this.layers) {
+        if (this.layers[i])
+          this.layers[i].remove();
+      }
+    }, this);
+    this.on('visible', function(e) {
+      for (var i in this.layers) {
+        if (this.layers[i])
+          this.layers[i].addTo(this._map);
+      }
+    }, this);
+
+    if (!this.layer) {
+      map.on('baselayerchange', function(e) {
+        this.setLayer(e.layer);
+        this._setLayerOpacity(e.layer, this.opacity);
+      }, this);
+    }
+
+    return container;
   },
 
   setOpacity: function(pixelX) {
@@ -64,12 +92,14 @@ L.Control.OpacitySlider = L.Control.extend({
 
     this.fire(value > 0 ? 'visible' : 'hidden');
 
-    if (this.overlay.eachLayer) {
-      this.overlay.eachLayer(function(layer) {
-        this._setLayerOpacity(layer, value);
-      }, this);
-    } else {
-      this._setLayerOpacity(this.overlay, value);
+    if (this.layer) {
+      if (this.layer.eachLayer) {
+        this.layer.eachLayer(function(layer) {
+          this._setLayerOpacity(layer, value);
+        }, this);
+      } else {
+        this._setLayerOpacity(this.layer, value);
+      }
     }
   },
 
@@ -78,8 +108,10 @@ L.Control.OpacitySlider = L.Control.extend({
       layer.setStyle({
         opacity: value
       });
+      this.opacity = value;
     } else if (layer.setOpacity) {
       layer.setOpacity(value);
+      this.opacity = value;
     }
   },
 
@@ -100,7 +132,30 @@ L.Control.OpacitySlider = L.Control.extend({
   },
 
   setLayer: function(layer) {
+    this.removeFeatureLayer(this.layer);
+    this.addFeatureLayer(layer);
     this.layer = layer;
+  },
+
+  addFeatureLayer: function(layer) {
+    this.layers.push(layer);
+    return this.layers;
+  },
+
+  removeFeatureLayer: function(layer) {
+    for (var i in this.layers) {
+      if (this.layers[i] && this.layers[i]._leaflet_id === layer._leaflet_id) {
+        this.layers.splice(i, 1);
+      }
+    }
+    return this.layers;
+  },
+
+  _resetSlider: function() {
+    // Set initial value
+    this._initialValue = this._OPACITY_MAX_PIXELS / (100 / this.options.opacity);
+    this.knob.setValueX(this._initialValue);
+    this.setOpacity(this._initialValue);
   },
 
   /**
