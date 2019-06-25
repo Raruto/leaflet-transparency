@@ -75,12 +75,11 @@ L.Control.OpacitySlider = L.Control.extend({
       if (map.options.layers && map.options.layers.length) {
         this.setLayer(map.options.layers[0]);
         this._setLayerOpacity(map.options.layers[0], this.opacity);
-      } else {
-        map.on('baselayerchange', function(e) {
-          this.setLayer(e.layer);
-          this._setLayerOpacity(e.layer, this.opacity);
-        }, this);
       }
+      map.on('baselayerchange', function(e) {
+        this.setLayer(e.layer);
+        this._setLayerOpacity(e.layer, this.opacity);
+      }, this);
     }
 
     return container;
