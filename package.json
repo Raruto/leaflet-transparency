@@ -1,6 +1,6 @@
 {
   "name": "leaflet-transparency",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A Leaflet plugin that allows to add an opacity control",
   "main": "leaflet-transparency.js",
   "scripts": {
