@@ -30,7 +30,7 @@ _For a working example see [demo](https://raruto.github.io/examples/leaflet-tran
     ...
     </body>
     ```
-3. **create your first simple “google-transparency” slippy map**
+3. **create your first simple “leaflet-transparency” slippy map**
     ```html
     <script>
 
