@@ -1,7 +1,7 @@
 # leaflet-transparency.js
 Leaflet plugin that allows to add an opacity control.
 
-_For a working example see [demo](https://raruto.github.io/examples/leaflet-transparency/leaflet-transparency.html)_
+_For a working example see [demo](https://raruto.github.io/leaflet-transparency/examples/leaflet-transparency.html)_
 
 ---
 
