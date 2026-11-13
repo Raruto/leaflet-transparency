@@ -1,7 +1,5 @@
-L.Control.OpacitySlider = L.Control.extend({
-
-  includes: L.Evented ? L.Evented.prototype : L.Mixin.Events,
-
+(function() {
+const opacitySliderMethods = {
   options: {
     position: 'topright',
     opacity: 100,
@@ -12,18 +10,18 @@ L.Control.OpacitySlider = L.Control.extend({
 
   _OPACITY_MAX_PIXELS: 69,
 
-  initialize: function(layer, options) {
+  _initializeOpacitySlider(layer, options) {
     L.Util.setOptions(this, options);
 
     this.layer = layer;
     this.layers = this.layer ? [this.layer] : [];
   },
 
-  onAdd: function(map) {
+  onAdd(map) {
 
-    var container = this._container = L.DomUtil.create('DIV', 'opacity-control');
-    var slider = this._slider = L.DomUtil.create('DIV', 'opacity-slider');
-    var knob = this._knob = L.DomUtil.create('DIV', 'opacity-knob');
+    const container = this._container = L.DomUtil.create('DIV', 'opacity-control');
+    const slider = this._slider = L.DomUtil.create('DIV', 'opacity-slider');
+    const knob = this._knob = L.DomUtil.create('DIV', 'opacity-knob');
 
     container.setAttribute("style", "cursor:pointer;");
     slider.setAttribute("style", "margin:" + this.options.margin + "px;overflow-x:hidden;overflow-y:hidden;background:url(" + this.options.sliderImageUrl + ") no-repeat;width:71px;height:21px;");
@@ -35,20 +33,20 @@ L.Control.OpacitySlider = L.Control.extend({
     this.knob = new this.DraggableObject(knob, {
       restrictY: true,
       container: container,
-      onDragEnd: function(e) {
-        var opacity = this.knob.getValueX();
+      onDragEnd: (e) => {
+        const opacity = this.knob.getValueX();
         this.setOpacity(opacity);
-      }.bind(this)
+      }
     });
 
     L.DomEvent.on(container, 'click mousedown mousemove mouseup', function(e) {
-      L.DomUtil.disableTextSelection();
+      if (L.DomUtil.disableTextSelection) L.DomUtil.disableTextSelection();
       if (e.type == 'mousedown') this._dragging = true;
       else if (e.type == 'mouseup' || e.type == 'click') this._dragging = false;
 
       if (e.type == 'mousemove' && this._dragging == true || e.type == 'click') {
-        var left = this.findPosLeft(this._container);
-        var x = e.pageX - left - this.options.margin;
+        const left = this.findPosLeft(this._container);
+        const x = e.pageX - left - this.options.margin;
         this.knob.setValueX(x);
         this.setOpacity(x);
       }
@@ -59,13 +57,13 @@ L.Control.OpacitySlider = L.Control.extend({
     this._resetSlider();
 
     this.on('hidden', function(e) {
-      for (var i in this.layers) {
+      for (let i in this.layers) {
         if (this.layers[i])
           this.layers[i].remove();
       }
     }, this);
     this.on('visible', function(e) {
-      for (var i in this.layers) {
+      for (let i in this.layers) {
         if (this.layers[i])
           this.layers[i].addTo(this._map);
       }
@@ -85,9 +83,9 @@ L.Control.OpacitySlider = L.Control.extend({
     return container;
   },
 
-  setOpacity: function(pixelX) {
+  setOpacity(pixelX) {
     // Range = 0 to OPACITY_MAX_PIXELS
-    var value = (100 / this._OPACITY_MAX_PIXELS) * pixelX;
+    let value = (100 / this._OPACITY_MAX_PIXELS) * pixelX;
     value = value / 100;
 
     if (value < 0) {
@@ -107,7 +105,7 @@ L.Control.OpacitySlider = L.Control.extend({
     }
   },
 
-  _setLayerOpacity: function(layer, value) {
+  _setLayerOpacity(layer, value) {
     if (layer.setStyle) {
       layer.setStyle({
         opacity: value
@@ -119,8 +117,8 @@ L.Control.OpacitySlider = L.Control.extend({
     }
   },
 
-  findPosLeft: function(obj) {
-    var curleft = 0;
+  findPosLeft(obj) {
+    let curleft = 0;
     if (obj.offsetParent) {
       do {
         curleft += obj.offsetLeft;
@@ -131,23 +129,23 @@ L.Control.OpacitySlider = L.Control.extend({
     return undefined;
   },
 
-  getLayer: function() {
+  getLayer() {
     return this.layer;
   },
 
-  setLayer: function(layer) {
+  setLayer(layer) {
     this.removeFeatureLayer(this.layer);
     this.addFeatureLayer(layer);
     this.layer = layer;
   },
 
-  addFeatureLayer: function(layer) {
+  addFeatureLayer(layer) {
     this.layers.push(layer);
     return this.layers;
   },
 
-  removeFeatureLayer: function(layer) {
-    for (var i in this.layers) {
+  removeFeatureLayer(layer) {
+    for (let i in this.layers) {
       if (this.layers[i] && this.layers[i]._leaflet_id === layer._leaflet_id) {
         this.layers.splice(i, 1);
       }
@@ -155,7 +153,7 @@ L.Control.OpacitySlider = L.Control.extend({
     return this.layers;
   },
 
-  _resetSlider: function() {
+  _resetSlider() {
     // Set initial value
     this._initialValue = this._OPACITY_MAX_PIXELS / (100 / this.options.opacity);
     this.knob.setValueX(this._initialValue);
@@ -165,10 +163,13 @@ L.Control.OpacitySlider = L.Control.extend({
   /**
    * TODO: trying to replace with the "L.Draggable" class
    */
-  DraggableObject: function(src, options) {
-    var self = this;
+  DraggableObject
+};
 
-    var _opts = {
+function DraggableObject(src, options) {
+    const self = this;
+
+    const _opts = {
       draggingCursor: "default",
       draggableCursor: "default",
       onDragStart: _dumbFunction,
@@ -183,16 +184,16 @@ L.Control.OpacitySlider = L.Control.extend({
       interval: 1
     };
 
-    L.Util.extend(_opts, options);
+    Object.assign(_opts, options);
 
-    var _draggingCursor = _opts.draggingCursor;
-    var _draggableCursor = _opts.draggableCursor;
-    var _dragging = false;
-    var _preventDefault;
-    var _currentX, _currentY, _formerY, _formerX, _formerMouseX, _formerMouseY;
-    var _top, _left;
-    var _originalX, _originalY;
-    var _target = src.setCapture ? src : document;
+    let _draggingCursor = _opts.draggingCursor;
+    let _draggableCursor = _opts.draggableCursor;
+    let _dragging = false;
+    let _preventDefault;
+    let _currentX, _currentY, _formerY, _formerX, _formerMouseX, _formerMouseY;
+    let _top, _left;
+    let _originalX, _originalY;
+    const _target = src.setCapture ? src : document;
 
     _opts.left = _opts.left || src.offsetLeft;
     _opts.top = _opts.top || src.offsetTop;
@@ -228,13 +229,13 @@ L.Control.OpacitySlider = L.Control.extend({
       _top = Math.round(y);
 
       if (_opts.intervalX > 1) {
-        var halfIntervalX = Math.round(_opts.intervalX / 2);
-        var roundedIntervalX = Math.round(_left % _opts.intervalX);
+        const halfIntervalX = Math.round(_opts.intervalX / 2);
+        const roundedIntervalX = Math.round(_left % _opts.intervalX);
         _left = (roundedIntervalX < halfIntervalX) ? (_left - roundedIntervalX) : (_left + (_opts.intervalX - roundedIntervalX));
       }
       if (_opts.intervalY > 1) {
-        var halfIntervalY = Math.round(_opts.intervalY / 2);
-        var roundedIntervalY = Math.round(_top % _opts.intervalY);
+        const halfIntervalY = Math.round(_opts.intervalY / 2);
+        const roundedIntervalY = Math.round(_top % _opts.intervalY);
         _top = (roundedIntervalY < halfIntervalY) ? (_top - roundedIntervalY) : (_top + (_opts.intervalY - roundedIntervalY));
       }
       if (_opts.container && _opts.container.offsetWidth) {
@@ -257,7 +258,7 @@ L.Control.OpacitySlider = L.Control.extend({
      * @private
      */
     function _mouseMove(ev) {
-      var e = ev || event;
+      const e = ev || event;
       _currentX = _formerX + ((_getFormerMouseX(e)) - _formerMouseX);
       _currentY = _formerY + ((_getFormerMouseY(e)) - _formerMouseY);
       _formerX = _currentX;
@@ -282,7 +283,7 @@ L.Control.OpacitySlider = L.Control.extend({
      * @private
      */
     function _mouseDown(ev) {
-      var e = ev || event;
+      const e = ev || event;
       _setCursor(true);
       _opts.onMouseDown(e);
       if (src.style.position !== "absolute") {
@@ -322,7 +323,7 @@ L.Control.OpacitySlider = L.Control.extend({
      * @private
      */
     function _mouseUp(ev) {
-      var e = ev || event;
+      const e = ev || event;
       if (_dragging) {
         _setCursor(false);
         _target.removeEventListener("mousemove", _mouseMove);
@@ -411,7 +412,7 @@ L.Control.OpacitySlider = L.Control.extend({
      * @return {Number}
      */
     self.getValueX = function() {
-      var i = _opts.intervalX || 1;
+      const i = _opts.intervalX || 1;
       return Math.round(_left / i);
     };
 
@@ -422,7 +423,7 @@ L.Control.OpacitySlider = L.Control.extend({
      * @return {Number}
      */
     self.getValueY = function() {
-      var i = _opts.intervalY || 1;
+      const i = _opts.intervalY || 1;
       return Math.round(_top / i);
     };
 
@@ -451,7 +452,7 @@ L.Control.OpacitySlider = L.Control.extend({
     self.preventDefaultMovement = function(prevent) {
       _preventDefault = prevent;
     };
-  }
+}
   /**
    * @name DraggableObjectOptions
    * @class This class represents the optional parameter passed into constructor of
@@ -468,4 +469,21 @@ L.Control.OpacitySlider = L.Control.extend({
    * @property {Boolean} [restrictX] Whether to restrict move in X direction
    * @property {Boolean} [restrictY] Whether to restrict move in Y direction
    */
-});
+
+if (L.version.startsWith('1.')) {
+  opacitySliderMethods.initialize = opacitySliderMethods._initializeOpacitySlider;
+  opacitySliderMethods.includes = L.Evented.prototype;
+  L.Control.OpacitySlider = L.Control.extend(opacitySliderMethods);
+} else {
+  L.Control.OpacitySlider = class extends L.Control {
+    constructor(layer, options) {
+      super();
+      this._initializeOpacitySlider(layer, options);
+    }
+  };
+  L.Control.OpacitySlider.include(opacitySliderMethods);
+  const events = Object.getOwnPropertyDescriptors(L.Evented.prototype);
+  delete events.constructor;
+  Object.defineProperties(L.Control.OpacitySlider.prototype, events);
+}
+})();
