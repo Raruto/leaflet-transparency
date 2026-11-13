@@ -26,7 +26,7 @@ _For a working example see [demo](https://raruto.github.io/leaflet-transparency/
     <style>html, body, #map { width: 100%; height: 100%; margin: 0; padding: 0; }</style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-transparency@0.0.6/leaflet-transparency.js"></script>
+    <script src="https://unpkg.com/leaflet-transparency@0.1.0/leaflet-transparency.js"></script>
     ...
     </head>
     ```
