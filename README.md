@@ -7,6 +7,10 @@ Leaflet plugin that allows to add an opacity control.
 
 _For a working example see [demo](https://raruto.github.io/leaflet-transparency/examples/leaflet-transparency.html)_
 
+<p align="center">
+    <a href="https://raruto.github.io/leaflet-transparency/examples/leaflet-transparency.html"><img src="https://raruto.github.io/img/leaflet-transparency.png" alt="Leaflet opacity sliders" /></a>
+</p>
+
 ---
 
 > _Initally based on the [google-transparency](https://github.com/Raruto/google-transparency) plugin_
